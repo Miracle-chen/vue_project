@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 声明式渲染： 采用简单的模板语法，声明式地将数据渲染到的DOM中 -->
+        <!-- 文本插值 -->
+        {{ message }}
+        <!-- v-bind 绑定属性上, 语法糖： : -->
+        <h1 :title="h1Title">vue</h1>
+        <!-- 绑定到DOM结构  -->
+        <p v-if="showP">p标签</p>
+        <!-- v-for 遍历数据 -->
+        <ul>
+            <li v-for="value in list">{{ value }}</li>
+        </ul>
+        <!-- v-model实现数据双向绑定 -->
+        <input type="" name="" value="" v-model="inputData">
+        <div>{{ inputData }}</div>
+        <!-- v-on绑定方法事件， 语法糖： @click -->
+        <button v-on:click="btnClick">按钮</button>
+        
+        <!-- 注册组件 -->
+        <ol>
+            <!--  用 v-bind 将代办的事项传递到子组件中 -->
+            <todo-item 
+                v-for="item in groceryList" 
+                v-bind:todo="item" 
+                v-bind:key=" item.id " 
+            />
+        </ol>
+    </div>
+</body>
+
+<script>
+    // 定义组件
+    let com = Vue.component('todo-item', {
+        // 在此处接收由父组件传递进来的参数
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+    // 可以再控制台 通过更改 app.message 的方式，来更改页面显示。
+    let app = new Vue({
+        el: '#app',
+        data: {
+            message: 'hello world',
+            h1Title: 'wo shi h1 de title' + new Date().toLocaleString(),
+            showP: false,
+            list: ['深入浅出es6', 'vue开发指南'],
+            inputData: '',
+            groceryList: [
+                { id: 0, text: '蔬菜' },
+                { id: 1, text: '奶酪' },
+            ]
+        },
+        methods: {
+            // 使用箭头函数，this指向全局， 使用普通函数， this指向app实例。
+            btnClick: function () {
+                this.list.push(new Date().getTime());
+            }
+        }
+    });
+
+    
+    // Vue 实例还暴露了一些有用的实例 property 与方法， 例如 ：
+    // 实例外获取实例的数据
+    app.$data;
+    // 获取根节点
+    app.$el === document.getElementById('app'); 
+    // 实例外监听数据的变化
+    app.$watch('message', function(){
+        console.log( 'message changed' );
+    })
+</script>
+
+</html>
