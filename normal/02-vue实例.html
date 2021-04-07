@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{ a }}
+    </div>
+</body>
+
+<script>
+    // 只有改变在实例创建的时候已经存在的data，才会同步渲染视图。在后期添加的data属性的更改，不会重新渲染DOM视图。
+    // 当 data被 Object.freeze() 冻结后，数据改变不了，视图也重新渲染不了。
+    // vue 也暴露了一些 以 $ 开头的方法与属性。
+
+    // 初始化过程  -- 设置数据监听、编译模板、将实例挂载到DOM上、在数据变化时候更新DOM
+    
+    // 更改data的值或者更改vm中data的值会同步更新页面。引用数据类型，指向同一内存地址。
+    let data = {
+        a: 1 
+    }
+    let vm = new Vue({
+        el: '#app',
+        data: data,
+        methods: {
+            
+        },
+        // 不要在选项property或者回调上使用箭头函数，因为箭头函数没有this,它会作为变量一直向上级寻找，知道找到为止。所以经常导致报错。
+        beforeCreate: function(){
+            console.log( 'beforeCreate', this );
+        },
+        created: function(){
+            console.log( 'createed', this );
+        },
+        beforeMount: function(){
+            console.log( 'beforeMount', this );
+        },
+        mounted: function(){
+            console.log( 'mounted', this );
+        },
+        beforeUpdate: function(){
+            console.log( 'beforeUpdate', this );
+        },
+        updated: function(){
+            console.log( 'updated', this );
+        },
+        beforeDestory: function(){
+            alert( 'beforeDestory', this );
+        },
+        destoryed: function(){
+            console.log( 'destoryed', this );
+        },
+    });
+    
+</script>
+
+</html>
