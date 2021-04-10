@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-for="item in list">
+            <todo-item :title="item" :style="itemStyle"></todo-item>
+        </div>
+        <input type="text" name="" value="" v-model="info" />
+        <button @click="addItem">添加</button>
+    </div>
+
+</body>
+
+<script>
+    Vue.component('todo-item', {
+        props: ['title'],
+        template:'<div>{{ title }}</div>'
+    })
+    let app = new Vue({
+        el: '#app',
+        data: {
+            info:'',
+            list: [
+                '吃饭',
+            ],
+            itemStyle:{
+                padding: '10px',
+                border: '1px solid #f5f5f5',
+                width: '500px',
+            }
+        },
+        methods:{
+            addItem:function(){
+                this.list.push( this.info );
+                this.info = '';
+            }
+        }
+    });
+</script>
+
+</html>

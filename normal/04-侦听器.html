@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+</head>
+
+<body>
+    <div id="watch-example">
+        <p>
+            Ask a yes/no question:
+            <input v-model="question">
+        </p>
+        <p>{{ answer }}</p>
+    </div>
+</body>
+
+<script>
+    let app = new Vue({
+        el: '#watch-example',
+        data: {
+            question: '',
+            answer: 'I cannot give you an answer until you ask a question!'
+        },
+        // 当需要在数据变化时执行异步或开销较大的操作时，使用侦听器是最有用的。
+        watch:{
+            question: function( newQuestion, oldQuestion ){
+                this.answer = 'Waiting for you to stop typing... ';
+                this.debouncedGetAnswer()
+            }
+        },
+        created: function(){
+            this.debouncedGetAnswer = _.debounce(this.getAnswer, 500 );
+        },
+        methods: {
+            getAnswer: function(){
+                if( this.question.indexOf('?') === -1 ){
+                    this.answer = 'Questions usually contain a question mark. ;-)';
+                    return ;
+                };
+                this.answer = "thinking";
+                var vm = this;
+                axios.get('https://yesno.wtf/api').then( function(res){
+                    vm.answer = _.capitalize(res.data.answer);
+                }).catch( err => {
+                    vm.answer = "Error" + err;
+                })
+            }
+        }
+    });
+</script>
+
+</html>

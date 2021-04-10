@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 两个模板使用了相同的元素，<input> 不会被替换掉——仅仅是替换了它的 placeholder。加上key属性，可以解决这个问题，元素也会被替换 -->
+        <div v-if=" loginType === 'mobile'">
+            <label>mobile</label>
+            <input key="mobile" placeholder="Enter your mobile">
+        </div>
+        <div v-else>
+            <label>email</label>
+            <input key="email" placeholder="Enter your email">
+        </div>
+        <button @click="changeType()">切换</button>
+        <!-- v-show  v-if -->
+        <!-- 
+            v-show只是切换display，其节点会一直存在于DOM树上。
+            v-if 如果不满足的时候，其节点会被从DOM树上移除，满足时候再添加。
+            频换切换的话，使用v-show会较好，否则使用v-if。
+         -->
+        <!-- 
+             不推荐 v-for 和 v-if 一起使用
+             v-for的优先级比v-if要高，在同时使用的时候，会先创建多个DOM节点，然后在逐个判断该节点是否显示。如果要按条件判断是否显示，
+             则可以使用这个，否则就可以再v-for的父节点元素上使用v-if
+        -->
+
+        <div v-for="(item, index) in items">
+            {{ item.message }} - {{ index }}
+        </div>
+
+        <!-- 
+            v-for = "(item, index) in items"
+            v-if v-else-if v-else
+
+        -->
+
+        <!-- 
+            for in  vs for of
+
+            for in 获取的是对象的key，数组和字符串的下标
+            for of 获取的是数组、字符串的每项值， 对象不能用
+
+         -->
+
+         <!-- 
+             数组里使用 v-for item， index
+             对象里使用 v-for  key, value, index
+          -->
+        <div v-for="(item, key, index) in object">
+            {{ item }} - {{ index }} - {{ index }}
+        </div>
+
+        <!-- 
+            数组方法
+            更改视图：
+            push / pop / shift / unshift / splice / reverse / sort
+            替换数组
+            filter / concat / slice 
+        -->
+        
+        <div>
+            <template v-for="item in oddNumberList">
+                {{ item }}
+            </template>
+        </div>
+
+        <div v-for="item in 10">
+            {{ item }}
+        </div>
+    </div>
+
+</body>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            loginType: 'mobile',
+            items: [
+                { message: 'Foo' },
+                { message: 'Bar' }
+            ],
+            object: {
+                title: 'How to do lists in Vue',
+                author: 'Jane Doe',
+                publishedAt: '2016-04-10'
+            },
+            numberList: [1,2,3,4,5,6],
+        },
+        computed: {
+            
+            oddNumberList:function(){
+                return this.numberList.filter( i => i % 2 === 0 );
+            }
+        },
+        methods: {
+            changeType: function () {
+                this.loginType = this.loginType === 'mobile' ? 'email' : 'mobile'
+            },
+        }
+    });
+</script>
+
+</html>
