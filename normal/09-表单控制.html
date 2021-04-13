@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="" name="" value="" v-model="inputValue">
+        <select v-model="sex" multiple>
+            <option value="1">男</option>
+            <option value="2">女</option>
+        </select>
+        <!-- 单个复选框，绑定为布尔值 -->
+        <input type="checkbox" name="" value="" v-model="checked">
+        <textarea>{{ inputValue }}</textarea>
+
+        <hr />
+        {{ checked }} - {{ inputValue }} - {{ sex }}
+
+        <hr>
+        <!-- 多个复选框，绑定到数组上 -->
+        <input type="checkbox" name="" value="jerry" v-model="checkedNames" />jerry
+        <input type="checkbox" name="" value="tom" v-model="checkedNames" />tom
+        <input type="checkbox" name="" value="herry" v-model="checkedNames" />herry
+        {{ checkedNames }}
+
+        <input type="radio" value="1" v-model="radioValue"></input>1
+        <input type="radio" value="2" v-model="radioValue"></input>2
+        {{ radioValue }}
+        <hr>
+        <!-- v-for渲染select, v-bind 绑定元素值 -->
+        <select v-model="selected">
+            <option v-for="item in options " :value=" item.value ">{{ item.text }}</option>
+        </select>
+        <!-- 值也可以绑定一个对象 -->
+        <select v-model="selected">
+            <option v-for="item in options " :value=" {value: item.value} ">{{ item.text }}</option>
+        </select>
+        <span>Selected: {{ selected }}</span>
+    </div>
+</body>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            checked: false,
+            inputValue: '',
+            sex: [],
+            radioValue: '',
+            checkedNames: [],
+            selected: 'A',
+            options: [
+                { text: 'One', value: 'A' },
+                { text: 'Two', value: 'B' },
+                { text: 'Three', value: 'C' }
+            ]
+        },
+        methods: {
+
+        }
+    });
+</script>
+
+</html>

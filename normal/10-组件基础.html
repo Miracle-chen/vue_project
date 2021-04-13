@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 每使用一次，都会创建一个new component, 其有自身的作用域。 -->
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+    </div>
+</body>
+
+<script>
+    // 组件也包含data、computed、watch、methods以及生命周期钩子函数等。没有el。
+    Vue.component('button-counter', {
+        // data必须是一个函数。组件的数据，接收的是一个 返回组件数据对象 的 函数
+        data: function(){
+            return {
+                count: 0
+            }
+        },
+        // 父组件传递进来的值的key
+        props:[],
+        mounted: function(){
+            console.log( 'mounted' );
+        },
+        watch: {
+            count: function(){
+                console.log( 'btn click' );
+            }
+        },
+        template: '<button @click=" count ++ ">按钮点击了{{ count }}次</button>'
+    })
+    let app = new Vue({
+        el: '#app',
+        data: {
+            
+        },
+        methods: {
+
+        }
+    });
+</script>
+
+</html>
