@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        
+        <!-- <h3>事件修饰符</h3> -->
+        <!-- 
+            事件修饰符
+            .stop   阻止事件冒泡
+            .prevent  阻止默认行为
+            .once  方法只在第一次调用时候有效
+            .lazy 失焦时候调用
+            .trim 去掉左右空格
+            .number 表单输入值变为number
+            .passive 
+            .self 
+            .capture
+        -->
+
+        <!-- <h3>按键修饰符，绑定到表单元素中</h3> -->
+        <!-- 
+            按键修饰符
+                keyup.enter
+                keyup.delete  delete / backspace
+                keyup.esc
+                keyup.space
+                keyup.up / down / left / right
+                ...
+            键码修饰符
+                keyup.13
+                ...
+
+         -->
+        <input type="text" name="" value="" @keyup.enter="enterEvent">
+        <input type="text" name="" value="" @keyup.delete="deleteEvent">
+        <input type="text" name="" value="" @keyup.page-down="pageDownEvent">
+        <input type="text" name="" value="" @keyup.13="code13Enter">
+        <input type="text" name="" value="" @keyup.enter2="code13Enter">
+
+        <!-- 
+            系统修饰键: 仅在按下相应按键时才触发鼠标或键盘事件的监听器
+            .ctrl
+            .alt
+            .shift
+            .meta
+            .exact  控制由精确的系统修饰符组合触发的事件
+        -->
+        <!-- 点击事件，不管有没有同时按下系统键，都会触发 -->
+        <div v-on:click="doSomething">doSomething</div>
+
+        <!-- 点击事件，只有在按下ctrl的时候点击，才会触发 -->
+        <div v-on:click.ctrl="doSomething">ctrl doSomething</div>
+
+        <!-- 纯点击事件，点击的同时没有按下任意一个系统键 -->
+        <div v-on:click.exact="doSomething">exact doSomething</div>
+    </div>
+</body>
+
+<script>
+    // 通过全局 config.keyCodes 对象自定义按键修饰符别名
+    Vue.config.keyCodes.enter2 = 13;
+    let app = new Vue({
+        el: '#app',
+        data: {
+            
+        },
+        methods: {
+            enterEvent: function(){
+                console.log('enterEvent');
+            },
+            deleteEvent: function(){
+                console.log( 'deleteEvent' );
+            },
+            pageDownEvent: function(){
+                console.log( 'pageDownEvent' );
+            },
+            code13Enter: function(){
+                console.log( 'code13Enter' );
+            },
+            doSomething: function(){
+                console.log( 'doSomething' );
+            }
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-bind 传递对象所有属性的时候，在子组件使用，需要声明对象所有的属性，然后才能使用 -->
+        <!-- 组价模板和父组件传入的 class 属性 和 style属性 会被合并起来 -->
+        <component-a :title=" title " :age="age" v-bind="post" placeholder="placeholder"></component-a>
+        父组件的title: {{ counterTitle }}
+
+        <hr />
+        <base-input
+            v-model="username"
+            required
+            placeholder="Enter your username"
+        ></base-input>
+
+        <hr>
+        chen-input
+        <chen-input type='checkbox'></chen-input>
+    </div>
+</body>
+
+<script>
+    const ComponentA = {
+        inheritAttrs: false,
+        // props可以定义为数组，也可以定义为对象，为对象时候可以声明组件接收数据的类型
+        // props 验证 是在组件创建之前执行的，其 property(如 data、computed )在default和validator函数中式不可以使用的。
+        props: {
+            // 定义数据类型以及默认值、是否必传、验证等,
+            // type 的可选值为  String Number Boolean Object Array Symbol Date Function  
+            title: {
+                // 数据类型
+                type: String,
+                // 默认值
+                default: 'default title',
+                // 是否必传
+                required: true,
+                // 格式要求
+                validator: function (value) {
+                    if (value.length <= 10) {
+                        console.error('title 长度不能小于10位')
+                    }
+                    // 返回为 failth ，控制台会抛出格式错误的提示 Invalid prop:
+                    return true;
+                    // return value.length > 10
+                }
+            },
+            // 可选多重类型
+            age: [Number, String],
+            content: String,
+            header: String
+        },
+        data: function () {
+            // 不应该在子组件内改变父组件 props 的值
+            return {
+                comTitle: this.title
+            }
+        },
+        template: `
+            <div>
+                <div @click=" handleTitleClick ">
+                    title: {{ comTitle }}
+                </div>
+                <br />
+                age: {{ age }}
+                <br />
+                {{ header }}
+                <br />
+                <div v-bind="$attrs">
+                    {{ content }}
+                </div>
+            </div>
+        `,
+        methods: {
+            handleTitleClick: function () {
+                this.comTitle = this.title + new Date().getTime();
+            }
+        }
+    }
+    Vue.component('base-input', {
+        inheritAttrs: false,
+        props: ['label', 'value'],
+        template: `
+            <label>
+                {{ label }}
+                <input
+                    v-bind="$attrs"
+                    v-bind:value="value"
+                    v-on:input="$emit('input', $event.target.value)"
+                >
+                <input>123</input>
+            </label>
+        `
+    })
+    Vue.component('chen-input', {
+        /*
+            禁用 Attribute 继承
+
+            组件传进来的属性，如果在props没有接收，则在组件模板根组件会被添加 没有接收 的属性。如 组件 的 type属性，会被添加到 div 身上。
+            如果子组件设置了 inheritAttrs: false, 则不会再模板根元素添加没接收的元素。
+            在模板内部的元素上 绑定 v-bind = "$attrs"，则可以使用组件传进来的未接收的属性。
+        */ 
+
+        inheritAttrs: false,
+        props: ['label'],
+        template: `
+            <div>
+                <input type="date"/>
+                <input v-bind="$attrs"></input>
+            </div>
+        `
+    })
+    new Vue({
+        el: '#app',
+        data: {
+            username: '',
+            title: 'machile·jackson',
+            age: 20,
+            post: {
+                header: 'post header',
+                content: 'post content'
+            }
+        },
+        components: {
+            'component-a': ComponentA,
+        },
+        computed: {
+            counterTitle: function () {
+                return this.title
+            }
+        }
+    })
+</script>
+
+</html>

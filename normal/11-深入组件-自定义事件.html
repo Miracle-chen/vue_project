@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <!-- 监听事件区分大小写，不会自动转化 -->
+    <div id="app">
+        <!-- 事件监听 @ -->
+        <!-- 监听事件名 会默认转化为小写，btnClick 会被转化成 btnclick，所以在触发事件时候的时候，使用 btnClick 接收不到， 推荐使用 kebab-case -->
+        <my-componnet @btnclick="handleBtnClick"></my-componnet>
+    </div>
+</body>
+
+<script>
+    Vue.component('my-componnet', {
+        data: function(){
+            return {
+                value: 1
+            }
+        },
+        template: `
+            <button @click="childBtnClick">btnClick</button>
+        `,
+        methods: {
+            childBtnClick: function(){
+                // $emit 触发组件绑定的父组件方法
+                this.$emit('btnclick');
+            }
+        }
+    })
+    new Vue({
+        el: '#app',
+        data: {
+            
+        },
+        computed: {
+            
+        },
+        methods: {
+            handleBtnClick: function(){
+                console.log( 'handleBtnClick' );
+            }
+        }
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-on:click  /  @click -->
+        <div>{{ count }}</div>
+        <!-- 监听事件 -->
+        <button v-on:click=" count ++ ">click me</button>
+        <!-- 监听事件方法 -->
+        <div @click="outDivClick">
+            <button type="" v-on:click.stop="showName">jerry</button>
+        </div>
+        <div @click="outDivClick">
+            <button type="" v-on:click.self="showName">jerry self</button>
+        </div>
+        <!-- $event：内联语句中访问原始DOM -->
+        <button type="submit" @click="eventClick($event)">$event</button>
+        
+        <!-- 
+            事件修饰符
+            .stop   阻止事件冒泡
+            .prevent  阻止默认行为
+            .once  方法只在第一次调用时候有效
+            .lazy 失焦时候调用
+            .trim 去掉左右空格
+            .number 表单输入值变为number
+            .passive 
+            .self 
+            .capture
+        -->
+
+        <!-- 输入值转遍为数字 -->
+        <br>
+        <input type="text" v-model.lazy.number="inputValue">
+        <div>{{ inputValue }}</div>
+
+        <!-- 阻止单击事件继续传播 -->
+        <a v-on:click.stop="doThis"></a>
+
+        <!-- 首次调用有效，后边失效 -->
+        <button type="submit" @click.once="submitClick">submit</button>
+
+        <!-- 提交事件不再重载页面 -->
+        <form v-on:submit.prevent="onSubmit"></form>
+
+        <!-- 修饰符可以串联 -->
+        <a v-on:click.stop.prevent="doThat"></a>
+
+        <!-- 只有修饰符 -->
+        <form v-on:submit.prevent></form>
+
+        <!-- 添加事件监听器时使用事件捕获模式 -->
+        <!-- 即内部元素触发的事件先在此处理，然后才交由内部元素进行处理 -->
+        <div v-on:click.capture="doThis">...</div>
+
+        <!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
+        <!-- 即事件不是从内部元素触发的 -->
+        <div v-on:click.self="doThat">...</div>
+    </div>
+</body>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            count: 0,
+            inputValue: '',
+        },
+        methods: {
+            // 事件处理方法
+            showName: function (event) {
+                console.log(event);
+                alert(`点击了${this.count}次`);
+                if (event) {
+                    alert(event.target.innerHTML);
+                }
+            },
+            outDivClick: function () {
+                alert('outside div');
+            },
+            submitClick: function () {
+                alert('submitClick');
+            },
+            eventClick: function (event) {
+                // 在此处可以访问原生DOM对象事件
+                console.log(event);
+            }
+        }
+    });
+</script>
+
+</html>

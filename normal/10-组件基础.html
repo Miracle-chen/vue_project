@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 每使用一次，都会创建一个new component, 其有自身的作用域。 -->
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <div>
+            <input type="text" v-model="inputValue">
+            <br/>
+            <!-- 
+                v-model 
+                    等价于 
+                @input + :value  
+            -->
+            <input 
+                type="text"
+                v-on:input="inputValue2 = $event.target.value "
+                v-bind:value=" inputValue2 "
+            >
+            <br>
+            {{ inputValue }} - {{ inputValue2 }}
+        </div>
+        <!-- 
+            自定义组件中使用 v-model 
+                为了让它正常工作，这个组件内的 <input> 必须：
+                    将其 value attribute 绑定到一个名叫 value 的 prop 上
+                    在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
+        -->
+        <div>
+            <input-item v-model="comInputValue" label="自定义"></input-item>
+            自定义组件 v-model {{ comInputValue }}
+        </div>
+        <div :style="{fontSize: postFontSize + 'em'}">
+            <!-- 传入监听事件 可以通过 $event 接收子组件抛出的参数, 所有的属性都要采取小写命名，不能使用驼峰语法 -->
+            <post-item 
+                v-for="item in posts" 
+                :post="item"
+                @enlarge="postFontSize += $event.scale"
+                @ennarrow="enNarrowFontSize"
+            >
+                <i>我是元素的插槽值</i>
+            </post-item>
+        </div>
+        <hr>
+        <button 
+            v-for=" tab in tabs"
+            @click = "currentTabName = tab"
+        >
+            {{ tab }}
+        </button>
+        <!-- 
+            动态组件 
+                通过 is 关键字来匹配组件
+                会在componentName改变的时候切换对应的组件。
+                componentaName会依赖currentTabName的改变而改变。计算属性
+        -->
+        <component :is="componentName"></component>
+
+        <!-- DOM解析 -->
+        <h5>DOM解析</h5>
+        <table>
+            <!-- 这个组件会被渲染到table元素之外 -->
+            <tab-age></tab-age>
+            <!-- 借助 is 属性，才能够正常渲染表单元素 -->
+            <tr is="tab-age"></tr>
+        </table>
+    </div>
+</body>
+
+<script>
+    // 组件也包含data、computed、watch、methods，template以及生命周期钩子函数等。没有el。
+    Vue.component('button-counter', {
+        // data必须是一个函数。组件的数据，接收的是一个 返回组件数据对象 的 函数
+        data: function(){
+            return {
+                count: 0
+            }
+        },
+        // 父组件传递进来的值的key
+        props:[],
+        mounted: function(){
+            console.log( 'mounted' );
+        },
+        watch: {
+            count: function(){
+                console.log( 'btn click' );
+            }
+        },
+        template: '<button @click=" count ++ ">按钮点击了{{ count }}次</button>'
+    });
+    Vue.component('post-item', {
+        props:['post'],
+        // 插槽： slot，接收组件内部的DOM节点
+        template: `
+            <div>
+                <button @click="fontsizeEnlarge">
+                    Enlarge text
+                </button>
+                <button @click="fontsizeNarrow">Narrow text</button>
+                <div>{{ post.title }}</div>
+                <slot></slot>
+            </div>
+        `,
+        methods: {
+            fontsizeEnlarge: function(){
+                // 触发监听事件, 第一个参数是事件， 第二个是抛出的任意数据, 可以抛出多个参数，在父组件方法接收的时候按顺序接收
+                this.$emit('enlarge', {scale: 1}, 2);
+            },
+            fontsizeNarrow: function(){
+                this.$emit('ennarrow', 1 , 2)
+            }
+        }
+    })
+    Vue.component('input-item',{
+        props: ['value', 'label'],
+        template: `
+            <div>
+                <label>{{ label }}</label>
+                <input 
+                    :value = "value"
+                    @input = "$emit('input', $event.target.value )"
+                 />
+            </div>
+        `,
+    })
+    Vue.component('tab-name', {
+        template: '<div>tab-name</div>'
+    })
+    Vue.component('tab-date', {
+        template: '<div>tab-date</div>'
+    })
+    Vue.component('tab-age', {
+        template: '<div>tab-age</div>'
+    })
+    let app = new Vue({
+        el: '#app',
+        data: {
+            inputValue: '',
+            inputValue2: '',
+            comInputValue:'',
+            currentTabName: 'name',
+            tabs: ["name", "date", "age"],
+            posts: [
+                { id: 1, title: 'My journey with Vue' },
+                { id: 2, title: 'Blogging with Vue' },
+                { id: 3, title: 'Why Vue is so fun' }
+            ],
+            postFontSize: 1
+        },
+        methods:{
+            enNarrowFontSize: function(data1, data2){
+                console.log( data1, data2 );
+                this.postFontSize -= data1;
+            }
+        },
+        computed: {
+            componentName: function(){
+                return 'tab-' + this.currentTabName
+            }
+        }
+    });
+</script>
+
+<!-- 
+    组件通信
+
+    父 => 子   
+        向子组件传递数据  props， 
+        监听子组件事件： 父添加方法属性 v-on:funcName， 子组件 @click="$emit(funcName)"，执行父组件的funcName方法。
+                        父组件通过 v-on | @ 向子组件传递一个 事件， 子组件通过内置的 $emit(func, data) 方法，传入事件名来触发事件。
+    
+    子 => 父   
+
+ -->
+
+</html>

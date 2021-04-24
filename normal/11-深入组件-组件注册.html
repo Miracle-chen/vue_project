@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+
+    <!-- 全局注册  局部注册 -->
+
+    <div id="app">
+        <my-component-name>
+            <!-- <my-component-age></my-component-age> -->
+        </my-component-name>
+        <component-a>
+            hello
+            <component-b></component-b>
+        </component-a>
+        <h3>
+            todos:  模块中组件的使用
+        </h3>
+    </div>
+</body>
+
+<script>
+    // 全局注册：全局注册的组件在其 子组件 中也可以使用。如 my-component-age 组件可以在 my-component-name 组件中使用。 
+        // 全局注册的组件无论使用与否，在打包的时候都会被打包到js中。造成文件的冗余。
+    Vue.component('my-component-name', {
+        data: function(){
+            return { value:1 }
+        },
+        template: `
+            <div>
+                <div>全局注册的组件</div>
+                <slot></slot>
+                <my-component-age></my-component-age>
+            </div>
+        `
+    });
+    Vue.component('my-component-age', {
+        data: function(){
+            return { value:1 }
+        },
+        template: '<div>我今年12岁了</div>'
+    });
+    // 局部注册: 局部注册的组件在其 子组件 中不可以使用, 如 component-b 组件不可以在 component-a 的template中使用。
+    let ComponentA = {
+        data: function(){
+            return {
+                value: 'a'
+            }
+        },
+        template:`
+            <div>
+                <div>局部组件componentA的value值为：{{ value }}</div>
+                <slot></slot>
+            </div>`
+    }
+    let ComponentB = {
+        data: function(){
+            return {
+                value: 'b'
+            }
+        },
+        template:`
+            <div>
+                <div>局部组件componentB的value值为：{{ value }}</div>
+            </div>`
+    }
+    let app = new Vue({
+        el: '#app',
+        data: {
+            
+        },
+        // 注册的局部组件
+        components:{
+            'component-a': ComponentA,
+            'component-b': ComponentB,
+        }
+    });
+
+</script>
+
+</html>

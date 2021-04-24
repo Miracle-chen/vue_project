@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 绑定class -->
+        <!-- 对象语法： 通过 v-bind 将 class 绑定到元素上，其存在与否，取决于其对应的值是不是 true -->
+        <div :class="{ active: isActive, 'text-danger': hasError }">
+            text-danger
+        </div>
+        <!-- 绑定的数据对象不必内联定义在模板里，下边代码效果是一样的 -->
+        <div :class="objectClass">
+            text-danger
+        </div>
+        <!-- 也可以绑定到一个返回对象的计算属性  -->
+        <div :class="computeObjectClass">
+            text-danger
+        </div>
+        <!-- 数组语法 -->
+        <div :class="[activeClass, errorClass]"></div>
+        <!-- 三目动态切换数组内容 -->
+        <div :class="[isActive ? activeClass : '', errorClass]"></div>
+
+        <!-- 数组内可以写对象模式 -->
+        <div :class="[{active: isActive}, errorClass]"></div>
+
+        <!-- 自定义组件上的类，会被添加到组件模板根元素上 -->
+        <my-component :class="[ { active: isActive }]"></my-component>
+
+        <!-- 绑定样式style -->
+        <!-- 对象方式 -->
+        <div :style="{ color: color, fontSize: fontSize + 'px' }">
+            style
+        </div>
+        <!-- 邦迪data对象方式 -->
+        <div :style="styleObject">
+            style
+        </div>
+        <!-- 数组方式 -->
+        <div :style="[styleObject, positionObject]">
+            style
+        </div>
+    </div>
+</body>
+
+<script>
+    Vue.component('my-component', {
+        template: '<p class="foo bar">Hi</p>'
+    })
+    let app = new Vue({
+        el: '#app',
+        data: {
+            // style
+            styleObject: {
+                color: 'yellow',
+                fontSize: '40px'
+            },
+            positionObject: {
+                marginLeft: '200px',
+                transform: 'rotate(15deg)'
+            },
+            color: 'red',
+            fontSize: 20,
+            // class
+            isActive: true,
+            hasError: true,
+            error: null,
+            objectClass: {
+                active: true,
+                'text-danger': true
+            },
+            activeClass: 'active',
+            errorClass: 'text-danger'
+        },
+        computed: {
+            computeObjectClass: function () {
+                return {
+                    active: this.isActive && !this.error,
+                    'text-danger': this.error && this.error.type === 'fatal'
+                }
+            }
+        },
+        methods: {}
+    });
+</script>
+
+</html>
