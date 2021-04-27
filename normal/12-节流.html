@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>加入节流</title>
+    <style type="text/css"></style>
+    <script type="text/javascript">
+        window.onload = function () {
+            //模拟ajax请求
+            function ajax(content) {
+                console.log('ajax request ' + content)
+            }
+
+            function throttle(fun, delay) {
+                let last, deferTimer
+                return function (args) {
+                    let that = this;
+                    let _args = arguments;
+
+                    let now = +new Date();
+                    if (last && now < last + delay) {
+                        clearTimeout(deferTimer);
+                        deferTimer = setTimeout(function () {
+                            last = now;
+                            fun.apply(that, _args);
+                        }, delay)
+                    } else {
+                        last = now;
+                        fun.apply(that, _args);
+                    }
+                }
+            }
+            let throttleAjax = throttle(ajax, 1000)
+            let inputThrottle = document.getElementById('throttle')
+            inputThrottle.addEventListener('keyup', function (e) {
+                throttleAjax(e.target.value)
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        3.加入节流后的输入：
+        <input type="text" name="throttle" id="throttle">
+    </div>
+</body>
+
+</html>
