@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <base-layout>
+            <!-- v-slot 指定插槽的名称， v-slot只能在template标签上使用，并以v-slot的参数的形式提供其名称。只有一种例外的情况 -->
+            <!-- 注意  v-slot  的写法格式 v-slot:插槽名称  -->
+            <template v-slot:header>
+                我是header的内容
+            </template>
+            <!-- 
+                在此处也可以指定插槽的名称为  default  
+                等同于
+                <template v-slot:default>
+                    <div>我是主题内容</div>
+                </template>
+            -->
+
+            <div>
+                我是主题内容
+            </div>  
+            <template v-slot:footer>
+                我是脚步内容
+            </template>
+        </base-layout>
+    </div>
+    <template id="bl">
+        <div class="container">
+            <slot :user="user" name="header"></slot>
+            <!-- 不带name的slot，其含有一个隐藏的name，为 default  -->
+            <slot></slot>  <!----  等同于  <slot name="default"></slot>-->
+            <slot name="footer"></slot>
+        </div>
+    </template>
+</body>
+
+<script>
+    const baseLayout = {
+        template: '#bl',
+    }
+    // 父组件
+    let app = new Vue({
+        el: '#app',
+        data: {},
+        components: {
+            'base-layout': baseLayout,
+        },
+    });
+</script>
+
+</html>

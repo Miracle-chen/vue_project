@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{ price | showPrice | FinalPrice }}
+    </div>
+
+</body>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            price:100,
+        },
+        filters:{
+            showPrice(price){
+                return '￥'+ price / 100 ;
+            },
+            
+            FinalPrice(price){
+                return '最终价格：' + price;
+            }
+        }
+    });
+</script>
+
+</html>

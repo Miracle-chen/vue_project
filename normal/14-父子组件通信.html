@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 向子组件传递一个数据movies，一个监听函数  additem。函数区分大小写，建议写成小写的模式 -->
+        <component-a :movies="movies" @additem="addItem"></component-a>
+    </div>
+    <template id="cpn">
+        <ol>
+            <li v-for="item in movies">{{ item }}</li>
+            <br />
+            <input type="text" v-model="newMovie">
+            <button @click="addNewMovie">添加</button>
+        </ol>
+    </template>
+
+</body>
+
+<script>
+    // 子组件
+    const componentA = {
+        data(){
+            return {
+                newMovie: '',
+            }
+        },
+        props:['movies'],
+        template: '#cpn',
+        methods: {
+            addNewMovie: function(){
+                this.$emit('additem', this.newMovie );
+                this.newMovie = '';
+            }
+        }
+    }
+    // 父组件
+    let app = new Vue({
+        el: '#app',
+        data: {
+            movies:['大话西游','西游降魔篇'],
+        },
+        components: {
+            'component-a': componentA,
+        },
+        methods:{
+            addItem:function(value){
+                this.movies.push( value );
+            }
+        }
+    });
+</script>
+
+</html>

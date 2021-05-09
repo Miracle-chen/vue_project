@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <current-user>
+            <!-- 
+                当组件中只有一个默认的插槽的时候，default可以省略 
+                默认插槽的缩写语法不能和具名插槽混用，因为它会导致作用域不明确
+                只要出现多个插槽，请始终为所有的插槽使用完整的基于 <template> 的语法
+            -->
+            <!-- 
+				2. 现在在父级作用域中，我们可以使用带值的 v-slot 来定义我们提供的插槽 prop 的名字，例如 slotProps
+			-->
+            <template v-slot:default="slotProps">
+                {{ slotProps.user.firstName }}
+            </template>
+            <!-- 
+                对于命名插槽，则需要写上插槽名字 v-slot:name="dataName" 
+                dataName 就是在子组件中绑定到对于插槽上的数据别名。
+                解构插槽props， 同时也可以给props进行重命名
+            -->
+            <template v-slot:list="{ list: cList }">
+                <ul>
+                    <li v-for="item in cList">{{ item }}</li>
+                </ul>
+            </template>
+        </current-user>
+    </div>
+    <template id="bl">
+        <span>
+            <!-- 
+                具名插槽
+                默认携带的name是default
+            -->
+            <!-- 
+				1. 为了让 user 在父级的插槽内容中可用，我们可以将 user 作为 <slot> 元素的一个 attribute 绑定上去 
+				绑定在 <slot> 元素上的 attribute 被称为插槽 prop。
+			-->
+            <slot name="default" v-bind:user="user">{{ user.lastName }}</slot>
+            <slot name='list' v-bind:list="list">{{ list[0] }}</slot>
+        </span>
+    </template>
+</body>
+
+<script>
+    const currentUser = {
+        template: '#bl',
+        data: function(){
+            return {
+                user:{
+                    firstName:'jerry',
+                    lastName: 'tom',
+                },
+                list: [ 1, 2, 3, 4 ]
+
+            }
+        }
+    }
+    // 父组件
+    let app = new Vue({
+        el: '#app',
+        data: {},
+        components: {
+            'current-user': currentUser,
+        },
+    });
+</script>
+
+</html>
